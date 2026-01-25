@@ -1,16 +1,36 @@
 from pydantic import BaseModel
 from langgraph.graph import StateGraph, START, END
 from typing import Dict, Any
-from rag import retrieve_docs
+import os
+from dotenv import load_dotenv
+from rag import rag_instance
 from langchain_openai import ChatOpenAI
-llm = ChatOpenAI(model="gpt-4o-mini")
+from langchain_groq import ChatGroq
+import logging
+
+logger = logging.getLogger(__name__)
+
+load_dotenv()
+
+# Check for API keys and initialize LLM
+if os.getenv("GROQ_API_KEY"):
+    llm = ChatGroq(model="openai/gpt-oss-120b")
+    logger.info("Using Groq API")
+elif os.getenv("OPENAI_API_KEY"):
+    llm = ChatOpenAI(model="gpt-4o-mini")
+    logger.info("Using OpenAI API")
+else:
+    raise ValueError(
+        "Missing required environment variable: Either OPENAI_API_KEY or GROQ_API_KEY must be set. "
+        "Please set at least one in your .env file or environment."
+    )
 class GraphState(dict):
     input: str
     answer: str
     context: str
 def retrieve(state: GraphState) -> GraphState:
-    context = retrieve_docs(state["input"])
-    print("CONTEXT", context)
+    context = rag_instance.retrieve_docs(state["input"])
+    logger.info(f"CONTEXT: {context}")
     state["context"] = context
     return state
 def answer(state: GraphState) -> GraphState:
@@ -26,9 +46,8 @@ def answer(state: GraphState) -> GraphState:
     {state['input']}
     """
     response = llm.invoke(prompt)
-    print("RESPONSE", response)
+    logger.info(f"RESPONSE: {response}")
     state["answer"]: response.content
-    print(state,"State")
     return {"answer": response.content}
 
 

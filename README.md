@@ -30,13 +30,16 @@ It allows you to store text as `.txt` files and ask questions that are answered 
 1. Install dependencies
 
 ```bash
-pip install -r requirements.txt
+uv venv .venv
+source .venv/Scripts/activate
+uv pip install -r requirements.txt
 ```
 
 2. Set environment variable
 
 ```env
-OPENAI_API_KEY=your_api_key_here
+OPENAI_API_KEY=your_api_key_here (or)
+GROQ_API_KEY = your_api_key_here
 ```
 
 3. Run the app
