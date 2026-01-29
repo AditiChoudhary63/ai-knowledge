@@ -89,6 +89,36 @@ class RAG:
         except Exception as e:
             logger.error(f"Unexpected error in save_text_to_file: {str(e)}")
             raise
+    def add_note(self, text: str) -> str:
+        """
+        Save text to a file.
+        
+        Args:
+            text: The text content to save
+            
+        Returns:
+            str: Path to the saved file
+            
+        """
+        try:
+            print("ttt",text)
+            if not text or not isinstance(text, str):
+                raise ValueError("Text must be a non-empty string")
+            
+            filename = f"doc_{time.time()}.txt"
+            filepath = os.path.join(self.documents_dir, filename)
+            os.makedirs(self.documents_dir, exist_ok=True)
+            
+            with open(filepath, "w", encoding="utf-8") as file:
+                file.write(text)
+            logger.info(f"Successfully saved text to file: {filepath}")
+            return filepath
+        except (OSError, IOError) as e:
+            logger.error(f"File I/O error while saving text to file: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error in save_text_to_file: {str(e)}")
+            raise
 
     def chunk_file(self, filepath: str) -> List[Document]:
         """
