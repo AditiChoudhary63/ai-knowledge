@@ -7,6 +7,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from dotenv import load_dotenv
 import logging
+from common_functions import get_llm
 
 logger = logging.getLogger(__name__)
 load_dotenv() 
@@ -72,8 +73,16 @@ class RAG:
         try:
             if not text or not isinstance(text, str):
                 raise ValueError("Text must be a non-empty string")
-            
-            filename = f"doc_{time.time()}.txt"
+            llm = get_llm(provider="groq", model="openai/gpt-oss-120b", temperature=0.2)
+            prompt = f"""
+            Analyze the following text and generate a filename for the file.
+            Text:
+            {text}
+            """
+            response = llm.invoke(prompt)
+            logger.info(f"RESPONSE: {response}")
+            filename = response.content.strip()
+            # filename = f"doc_{time.time()}.txt"
             filepath = os.path.join(self.documents_dir, filename)
             os.makedirs(self.documents_dir, exist_ok=True)
             
@@ -104,8 +113,18 @@ class RAG:
             print("ttt",text)
             if not text or not isinstance(text, str):
                 raise ValueError("Text must be a non-empty string")
+
+            llm = get_llm(provider="groq", model="openai/gpt-oss-120b", temperature=0.2)
+            prompt = f"""
+            Analyze the following text and generate a filename for the file.
+            Text:
+            {text}
+            """
+            response = llm.invoke(prompt)
+            logger.info(f"RESPONSE: {response}")
+            filename = response.content.strip()
             
-            filename = f"doc_{time.time()}.txt"
+            # filename = f"doc_{time.time()}.txt"
             filepath = os.path.join(self.documents_dir, filename)
             os.makedirs(self.documents_dir, exist_ok=True)
             

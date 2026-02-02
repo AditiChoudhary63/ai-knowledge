@@ -5,6 +5,7 @@ import uvicorn
 from api import app
 import logging
 from logger import setup_logger
+
 # from groq import Groq
 # client = Groq()
 load_dotenv()

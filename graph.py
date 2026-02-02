@@ -4,20 +4,20 @@ from typing import Dict, Any
 import os
 from dotenv import load_dotenv
 from rag import rag_instance
-from langchain_openai import ChatOpenAI
-from langchain_groq import ChatGroq
+from common_functions import get_llm
 import logging
 
 logger = logging.getLogger(__name__)
 
 load_dotenv()
 
+
 # Check for API keys and initialize LLM
 if os.getenv("GROQ_API_KEY"):
-    llm = ChatGroq(model="openai/gpt-oss-120b")
+    llm = get_llm(provider="groq", model="openai/gpt-oss-120b", temperature=0.2)
     logger.info("Using Groq API")
 elif os.getenv("OPENAI_API_KEY"):
-    llm = ChatOpenAI(model="gpt-4o-mini")
+    llm = get_llm(provider="openai", model="gpt-4o-mini", temperature=0.2)
     logger.info("Using OpenAI API")
 else:
     raise ValueError(
