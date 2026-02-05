@@ -66,21 +66,20 @@ class RAG:
         Returns:
             str: Path to the saved file
             
-        Raises:
-            ValueError: If text is not a non-empty string
-            OSError, IOError: If file I/O operations fail
         """
         try:
             if not text or not isinstance(text, str):
                 raise ValueError("Text must be a non-empty string")
             llm = get_llm(provider="groq", model="openai/gpt-oss-120b", temperature=0.2)
             prompt = f"""
-            Analyze the following text and generate a filename for the file.
-            Text:
+            Analyze the following text and generate simple and a filename with .txt extension for the file. The filename should be a valid filename and should not contain any special characters. The filename should be a single word and should not contain any spaces.
+           Response format: filename.txt
+           Text:
             {text}
             """
             response = llm.invoke(prompt)
-            logger.info(f"RESPONSE: {response}")
+
+            logger.info(f"RESPONSEeeeee: {response}")
             filename = response.content.strip()
             # filename = f"doc_{time.time()}.txt"
             filepath = os.path.join(self.documents_dir, filename)

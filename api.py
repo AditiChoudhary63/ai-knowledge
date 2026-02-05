@@ -31,9 +31,9 @@ def document(request: DocumentRequest):
         return DocumentResponse(filepath="", message=f"Error: {str(e)}")
 
 @app.post("/ask", response_model=AskResponse)
-def ask(request: AskRequest):
+async def ask(request: AskRequest):
     try:
-        result = compiled_graph.invoke({"input": request.question})
+        result = await compiled_graph.ainvoke({"input": request.question})
         return AskResponse(answer=result["answer"])
     except Exception as e:
         return AskResponse(answer=f"Error: {str(e)}")

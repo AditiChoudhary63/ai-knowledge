@@ -2,19 +2,34 @@
 from mcp.client.stdio import stdio_client
 from mcp import StdioServerParameters,ClientSession
 import asyncio
+import logging
+
+logger = logging.getLogger(__name__)
+
 server_params = StdioServerParameters(command="uv",args= ["--directory","C:\\code\\ai_knowledge\\ai-knowledge","run","mcp_server.py"])
 async def main():
     try: 
         async with stdio_client(server_params) as (read, write):
-            print("client connected")
+            logger.info("client connected")
             async with ClientSession(read, write) as session:
-                print("session created")
+                logger.info("session created")
                 await session.initialize()
-                print("session intialized")
+                logger.info("session intialized")
                 tools = await session.list_tools()
-                print(tools)
+                logger.info(tools)
     except Exception as e:
-        print(e)
+        logger.error(e)
                 # result = await session.call_tool("add",arguments={})
+
+async def get_tools():
+    try:
+        async with stdio_client(server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                tools = await session.list_tools()
+                return tools
+    except Exception as e:
+        logger.error(e)
+        return None
 if __name__ == "__main__":
     asyncio.run(main())

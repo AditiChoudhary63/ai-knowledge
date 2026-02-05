@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from rag import rag_instance
 from common_functions import get_llm
 import logging
-
+import mcp_client
+import asyncio
 logger = logging.getLogger(__name__)
 
 load_dotenv()
@@ -33,7 +34,7 @@ def retrieve(state: GraphState) -> GraphState:
     logger.info(f"CONTEXT: {context}")
     state["context"] = context
     return state
-def answer(state: GraphState) -> GraphState:
+async def answer(state: GraphState) -> GraphState:
     """
     Generates answer using retrieved context
     """
@@ -45,11 +46,17 @@ def answer(state: GraphState) -> GraphState:
     Question:
     {state['input']}
     """
-    response = llm.invoke(prompt)
-    logger.info(f"RESPONSE: {response}")
-    state["answer"]: response.content
-    return {"answer": response.content}
-
+    try:
+        tools = await mcp_client.get_tools()
+        logger.info(f"TOOLSSSS: {tools}")
+        llm_with_tools = llm.bind_tools(tools)
+        response = await llm_with_tools.ainvoke(prompt)
+        logger.info(f"RESPONSE: {response}")
+        state["answer"] = response.content
+        return {"answer": response.content}
+    except Exception as err:
+        logger.error(f"ERROR: {err}")
+        return {"answer": "Error: " + str(err)}
 
 graph = StateGraph(GraphState)
 graph.add_node("retrieve", retrieve)

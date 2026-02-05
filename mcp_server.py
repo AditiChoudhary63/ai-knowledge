@@ -48,5 +48,17 @@ def create_note(text: str) -> str:
     except Exception as err:
         return f"Error: {str(err)}"
 
+@mcp.tool()
+def fetch_all_notes():
+    """
+    Fetch all user notes from file system
+    Returns:
+        List[str]: list of file names
+    """
+    try:
+        notes = [f for f in os.listdir('./documents') if f.endswith('.txt')]
+        return notes
+    except Exception as err:
+        return f"Error: {str(err)}"
 if __name__ == "__main__" :
     mcp.run()
