@@ -4,7 +4,8 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
 from typing import List, Dict, Any, Tuple
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import Chroma
+# from langchain_community.vectorstores import Chroma
+from langchain_chroma import Chroma
 from dotenv import load_dotenv
 import logging
 from common_functions import get_llm
