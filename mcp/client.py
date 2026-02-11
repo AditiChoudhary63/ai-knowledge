@@ -3,7 +3,7 @@ from mcp.client.stdio import stdio_client
 from log import logger
 import asyncio
 
-server_params = StdioServerParameters(command="uv",args= ["--directory","C:\\code\\ai_knowledge\\ai-knowledge\\mcp","run","mcp_s.py"])
+server_params = StdioServerParameters(command="uv",args= ["run","mcp_s.py"])
 
 async def main():
     try: 
